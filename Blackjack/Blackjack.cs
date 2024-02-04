@@ -100,16 +100,15 @@
 				return 10;
 
 			case 12: // A
-				if (cardHolder.totalWorth + 11 > 21) // If the player's current sum + potential sum of A > 21, A = 1
+				if (cardHolder.totalWorth + 11 > 21) // If the cardHolder's current sum + potential sum of A > 21, A = 1
 				{
 					return 1;
 				}
 
 				return 11; // Otherwise A = 11
-
-			default:
-				return -1; // Woopsie! No proper value, mark faulty card with -1
 		}
+
+		return -1; // Woopsie! No proper value, mark faulty card with -1
 	}
 
 	public int GetValueFromIndex(int index)
@@ -128,9 +127,8 @@
 
 			case 12: // A
 				return 11;
-
-			default:
-				return -1; // Woopsie! No proper value, mark faulty card with -1
 		}
+
+		return -1; // Woopsie! No proper value, mark faulty card with -1
 	}
 }

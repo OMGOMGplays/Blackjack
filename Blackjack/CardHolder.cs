@@ -3,8 +3,8 @@
 	public virtual DeckOfCards cardDeck { get; set; } = new();
 	public virtual int totalWorth { get; set; }
 
-	private bool currentTurn;
-	private bool folded;
+	public bool currentTurn;
+	public bool folded;
 
 	public virtual void OnStart()
 	{
@@ -14,6 +14,11 @@
 
 		currentTurn = false;
 		folded = false;
+	}
+
+	public virtual void Update()
+	{
+
 	}
 
 	public virtual int GetCardCount()
@@ -42,10 +47,6 @@
 
 			continue;
 		}
-
-#if DEBUG
-		Console.WriteLine($"Added new card, its value and suit is: {Blackjack.Instance.GetValueFromIndex(card.GetValueIndex(), this)} : {card.GetSuit()}");
-#endif
 	}
 
 	public virtual void SumCards()

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Loke\\source\\repos\\Blackjack\\Blackjack\\Blackjack.csproj": {}
+    "C:\\Users\\Loke.Vigstrand\\Skolprojekt\\VS22\\Blackjack\\Blackjack\\Blackjack.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Loke\\source\\repos\\Blackjack\\Blackjack\\Blackjack.csproj": {
+    "C:\\Users\\Loke.Vigstrand\\Skolprojekt\\VS22\\Blackjack\\Blackjack\\Blackjack.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Loke\\source\\repos\\Blackjack\\Blackjack\\Blackjack.csproj",
+        "projectUniqueName": "C:\\Users\\Loke.Vigstrand\\Skolprojekt\\VS22\\Blackjack\\Blackjack\\Blackjack.csproj",
         "projectName": "Blackjack",
-        "projectPath": "C:\\Users\\Loke\\source\\repos\\Blackjack\\Blackjack\\Blackjack.csproj",
-        "packagesPath": "C:\\Users\\Loke\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Loke\\source\\repos\\Blackjack\\Blackjack\\obj\\",
+        "projectPath": "C:\\Users\\Loke.Vigstrand\\Skolprojekt\\VS22\\Blackjack\\Blackjack\\Blackjack.csproj",
+        "packagesPath": "C:\\Users\\Loke.Vigstrand\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Loke.Vigstrand\\Skolprojekt\\VS22\\Blackjack\\Blackjack\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Loke\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Loke.Vigstrand\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -38,6 +38,9 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "default"
         }
       },
       "frameworks": {
@@ -59,7 +62,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

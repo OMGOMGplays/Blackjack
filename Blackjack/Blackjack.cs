@@ -7,6 +7,7 @@
 
 	private int desiredPlayers;
 	private Player[] players = new Player[MAXPLAYERS];
+	private Dealer dealer = new();
 	private int playerTurnIndex;
 
 	public static void Main()
@@ -39,7 +40,6 @@
 		houseCards.SetCardValues();
 
 		// Dealer
-		Dealer dealer = new();
 		dealer.OnStart();
 
 		// Player(s)
@@ -57,6 +57,7 @@
 		Console.WriteLine($"\nHow many players are there, 1-{MAXPLAYERS}? Type Q to quit.");
 		Console.Write("> "); // Flair
 		string input = Console.ReadLine(); // Take the players input
+		desiredPlayers = 0;
 
 		if (int.TryParse(input, out int result)) // If the input is an int
 		{
@@ -87,20 +88,20 @@
 
 	public int GetValueFromIndex(int index, CardHolder cardHolder)
 	{
-		if (index >= 1 && index <= 8) // 2-10
+		if (index >= 1 && index <= 9) // 2-10
 		{
 			return index + 1;
 		}
 
 		switch (index)
 		{
-			case 9:  // J
-			case 10: // Q
-			case 11: // K
+			case 10: // J
+			case 11: // Q
+			case 12: // K
 				return 10;
 
-			case 12: // A
-				if (cardHolder.totalWorth + 11 > 21) // If the cardHolder's current sum + potential sum of A > 21, A = 1
+			case 13: // A
+				if ((cardHolder.totalWorth + 11) > 21) // If the cardHolder's current sum + potential sum of A > 21, A = 1
 				{
 					return 1;
 				}
@@ -113,22 +114,22 @@
 
 	public int GetValueFromIndex(int index)
 	{
-		if (index >= 1 && index <= 8) // 2-10
-		{
-			return index + 1;
-		}
+        if (index >= 1 && index <= 9) // 2-10
+        {
+            return index + 1;
+        }
 
-		switch (index)
-		{
-			case 9:  // J
-			case 10: // Q
-			case 11: // K
-				return 10;
+        switch (index)
+        {
+            case 10: // J
+            case 11: // Q
+            case 12: // K
+                return 10;
 
-			case 12: // A
-				return 11;
-		}
+            case 13: // A
+                return 11;
+        }
 
-		return -1; // Woopsie! No proper value, mark faulty card with -1
+        return -1; // Woopsie! No proper value, mark faulty card with -1
 	}
 }

@@ -14,25 +14,66 @@
         Console.WriteLine($"\nHouseCards: CARDCOUNT = {CARDCOUNT}\n");
 #endif
 
-        for (int cards = 0; cards < CARDCOUNT; cards++)
+        //for (int cards = 0; cards < CARDCOUNT; cards++)
+        //{
+        //    Card card = new();
+        //    int suit = 0;
+        //    int value = 1;
+
+        //    if (suit > SUITCOUNT)
+        //    {
+        //        suit = 0;
+        //    }
+
+        //    if (value > VALUECOUNT + 1)
+        //    {
+        //        value = 1;
+        //    }
+
+        //    card.SetValueIndex(value);
+        //    card.SetSuit(suit);
+
+        //    value++;
+        //    suit++;
+
+        //    cardsRemaining[cards] = card;
+
+        //}
+
+        Card tempCard = null;
+
+        for (int pack = 1; pack <= PACKCOUNT; pack++)
         {
-            Card card = new();
-
-            cardsRemaining[cards] = card;
-
-            for (int i = 1; i < VALUECOUNT + 1; i++)
+            for (int suit = 0; suit < SUITCOUNT; suit++)
             {
-                cardsRemaining[cards].SetValueIndex(i);
-
-                for (int j = 0; j < SUITCOUNT; j++)
+                if (suit > SUITCOUNT)
                 {
-                    cardsRemaining[cards].SetSuit(j);
+                    suit = 0;
+                }
+
+                for (int value = 1; value <= VALUECOUNT; value++)
+                {
+                    if (value > VALUECOUNT)
+                    {
+                        value = 1;
+                    }
+
+                    Card card = new(value, suit);
+                    tempCard = new(card.GetValue(), card.GetSuit());
                 }
             }
+        }
 
-#if DEBUG                              // 0-indexed, + 1 for visuals
-            Console.WriteLine($"Generated card #{cards + 1}, value & suit: {Blackjack.Instance.GetValueFromIndex(cardsRemaining[cards].GetValueIndex())} (index {cardsRemaining[cards].GetValueIndex()}) : {cardsRemaining[cards].GetSuit()}");
-#endif
+        for (int i = 0; i < cardsRemaining.Length;)
+        {
+            if (cardsRemaining[i] == null)
+            {
+                cardsRemaining[i] = tempCard;
+
+                Console.WriteLine($"Generated card #{i + 1} value & suit: {tempCard.GetValue()} : {tempCard.GetSuit()}");
+
+                i++;
+            }
         }
 
         Console.WriteLine($"\nGenerated {CARDCOUNT} cards!\n");
@@ -40,25 +81,25 @@
 
     public void DealCard(int cardIndex, CardHolder receiver)
     {
-        // Can't deal a null or already dealt card, try again with the next / prev one (depending on cardIndex)
-        if (cardsRemaining[cardIndex] == null || cardsDealt[cardIndex] != null)
-        {
-            if (cardIndex == CARDCOUNT)
-            {
-                DealCard(cardIndex - 1, receiver);
-            }
-            else
-            {
-                DealCard(cardIndex + 1, receiver);
-            }
-        }
+        //        // Can't deal a null or already dealt card, try again with the next / prev one (depending on cardIndex)
+        //        if (cardsRemaining[cardIndex] == null || cardsDealt[cardIndex] != null)
+        //        {
+        //            if (cardIndex == CARDCOUNT)
+        //            {
+        //                DealCard(cardIndex - 1, receiver);
+        //            }
+        //            else
+        //            {
+        //                DealCard(cardIndex + 1, receiver);
+        //            }
+        //        }
 
-        cardsDealt[cardIndex] = cardsRemaining[cardIndex];
-        cardsRemaining[cardIndex] = null;
+        //        cardsDealt[cardIndex] = cardsRemaining[cardIndex];
+        //        cardsRemaining[cardIndex] = null;
 
-        receiver.AddCard(cardsDealt[cardIndex]);
-#if DEBUG
-        Console.WriteLine($"Card #{cardIndex} dealt, value & suit: {Blackjack.Instance.GetValueFromIndex(cardsDealt[cardIndex].GetValueIndex())} (index {cardsDealt[cardIndex].GetValueIndex()}) : {cardsDealt[cardIndex].GetSuit()}");
-#endif
+        //        receiver.AddCard(cardsDealt[cardIndex]);
+        //#if DEBUG
+        //        Console.WriteLine($"Card #{cardIndex} dealt, value & suit: {Blackjack.Instance.GetValueFromIndex(cardsDealt[cardIndex].GetValueIndex())} (index {cardsDealt[cardIndex].GetValueIndex()}) : {cardsDealt[cardIndex].GetSuit()}");
+        //#endif
     }
 }

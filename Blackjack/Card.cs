@@ -1,21 +1,33 @@
 ﻿public class Card
 {
-	private int valueIndex;
+	private int value;
 	private Suit suit;
 
-	public void SetValueIndex(int valueIndex)
+	public Card(int value, int suit)
 	{
-		this.valueIndex = valueIndex;
-	}
-
-	public void SetSuit(int suit)
-	{
+		this.value = value;
 		this.suit = (Suit)suit;
 	}
 
-	public int GetValueIndex()
+	public Card(int value, Suit suit)
 	{
-		return valueIndex;
+		this.value = value;
+		this.suit = suit;
+	}
+	
+	//public void SetValueIndex(int valueIndex)
+	//{
+	//	this.valueIndex = valueIndex;
+	//}
+
+	//public void SetSuit(int suit)
+	//{
+	//	this.suit = (Suit)suit;
+	//}
+
+	public int GetValue()
+	{
+		return value;
 	}
 
 	public Suit GetSuit()
@@ -26,7 +38,7 @@
 
 public enum Suit
 {
-	Hearts = 0,
+	Hearts,
 	Diamonds,
 	Clubs,
 	Spades

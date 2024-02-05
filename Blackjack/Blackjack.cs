@@ -78,7 +78,7 @@
 		{
 			if (input.Contains("Q") || input.Contains("q"))
 			{
-				Environment.Exit(1); // Quitting!
+				Environment.Exit(0); // Quitting!
 			}
 
 			Console.WriteLine("Input was NaN."); // Text isn't numbers, so ignore and retry

@@ -53,7 +53,7 @@
 	{
 		foreach (Card card in cardDeck.cards)
 		{
-			totalWorth += Blackjack.Instance.GetValueFromIndex(card.GetValueIndex(), this);
+			totalWorth += Blackjack.Instance.GetValueFromIndex(card.GetValue(), this);
 #if DEBUG
 			Console.WriteLine($"totalWorth: {totalWorth}");
 #endif

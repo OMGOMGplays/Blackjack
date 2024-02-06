@@ -88,7 +88,7 @@ public class Blackjack
                 Environment.Exit(0); // Quitting!
             }
 
-            Console.WriteLine("Input was NaN."); // Text isn't numbers, so ignore and retry
+            Console.WriteLine("\nInvalid input."); // Text isn't numbers, so ignore and retry
             SetPlayers();
         }
     }

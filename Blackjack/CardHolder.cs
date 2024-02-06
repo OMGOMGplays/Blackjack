@@ -10,8 +10,6 @@
     {
         cardSum = 0;
 
-        cardDeck.OnStart();
-
         currentTurn = false;
         unableToPlay = false;
     }

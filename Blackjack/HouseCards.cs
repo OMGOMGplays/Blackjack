@@ -8,98 +8,86 @@
     public Card[] cardsRemaining = new Card[CARDCOUNT];
     public Card[] cardsDealt = new Card[CARDCOUNT];
 
-    public void SetCardValues()
+    public void GenerateCards()
     {
+        int pack = 1;
+        int suit = 0;
+        int value = 1;
+        Card card = new(0, 0);
+
 #if DEBUG
         Console.WriteLine($"\nHouseCards: CARDCOUNT = {CARDCOUNT}\n");
 #endif
 
-        //for (int cards = 0; cards < CARDCOUNT; cards++)
-        //{
-        //    Card card = new();
-        //    int suit = 0;
-        //    int value = 1;
-
-        //    if (suit > SUITCOUNT)
-        //    {
-        //        suit = 0;
-        //    }
-
-        //    if (value > VALUECOUNT + 1)
-        //    {
-        //        value = 1;
-        //    }
-
-        //    card.SetValueIndex(value);
-        //    card.SetSuit(suit);
-
-        //    value++;
-        //    suit++;
-
-        //    cardsRemaining[cards] = card;
-
-        //}
-
-        Card tempCard = null;
-
-        for (int pack = 1; pack <= PACKCOUNT; pack++)
+        for (pack = 1; pack <= PACKCOUNT; pack++)
         {
-            for (int suit = 0; suit < SUITCOUNT; suit++)
+            for (suit = 0; suit < SUITCOUNT; suit++)
             {
-                if (suit > SUITCOUNT)
-                {
-                    suit = 0;
-                }
+                //if (suit == SUITCOUNT + 1)
+                //{
+                //    suit = 0;
+                //}
 
-                for (int value = 1; value <= VALUECOUNT; value++)
+                for (value = 1; value <= VALUECOUNT; value++)
                 {
-                    if (value > VALUECOUNT)
+                    //if (value == VALUECOUNT + 1)
+                    //{
+                    //    value = 1;
+                    //}
+
+                    card = ApplyToCard(value, suit);
+
+                    for (int i = 0; i < cardsRemaining.Length; i++)
                     {
-                        value = 1;
+                        if (cardsRemaining[i] == null)
+                        {
+                            cardsRemaining[i] = card;
+                        }
                     }
 
-                    Card card = new(value, suit);
-                    tempCard = new(card.GetValue(), card.GetSuit());
+                    //Card card = new(value, suit);
+
+                    Console.WriteLine($"Generated card from pack #{pack} value & suit: {Blackjack.Instance.GetCardValue(card.GetValue())} (index {card.GetValue()}) : {card?.GetSuit()}");
                 }
-            }
-        }
-
-        for (int i = 0; i < cardsRemaining.Length;)
-        {
-            if (cardsRemaining[i] == null)
-            {
-                cardsRemaining[i] = tempCard;
-
-                Console.WriteLine($"Generated card #{i + 1} value & suit: {tempCard.GetValue()} : {tempCard.GetSuit()}");
-
-                i++;
             }
         }
 
         Console.WriteLine($"\nGenerated {CARDCOUNT} cards!\n");
     }
 
-    public void DealCard(int cardIndex, CardHolder receiver)
+    public void DealCard(int card, CardHolder receiver)
     {
-        //        // Can't deal a null or already dealt card, try again with the next / prev one (depending on cardIndex)
-        //        if (cardsRemaining[cardIndex] == null || cardsDealt[cardIndex] != null)
-        //        {
-        //            if (cardIndex == CARDCOUNT)
-        //            {
-        //                DealCard(cardIndex - 1, receiver);
-        //            }
-        //            else
-        //            {
-        //                DealCard(cardIndex + 1, receiver);
-        //            }
-        //        }
+        // Can't deal a null or already dealt card, try again with the next / prev one (depending on cardIndex)
+        if (cardsRemaining[card] == null)
+        {
+            if (card == CARDCOUNT)
+            {
+                DealCard(card - 1, receiver);
+            }
+            else
+            {
+                DealCard(card + 1, receiver);
+            }
+        }
 
-        //        cardsDealt[cardIndex] = cardsRemaining[cardIndex];
-        //        cardsRemaining[cardIndex] = null;
+        cardsDealt[card] = cardsRemaining[card];
+        cardsRemaining[card] = null;
 
-        //        receiver.AddCard(cardsDealt[cardIndex]);
-        //#if DEBUG
-        //        Console.WriteLine($"Card #{cardIndex} dealt, value & suit: {Blackjack.Instance.GetValueFromIndex(cardsDealt[cardIndex].GetValueIndex())} (index {cardsDealt[cardIndex].GetValueIndex()}) : {cardsDealt[cardIndex].GetSuit()}");
-        //#endif
+        if (cardsDealt[card] == null)
+        {
+            Console.WriteLine("Null card...\n");
+            return;
+        }
+
+#if DEBUG
+        Console.WriteLine($"Card #{card} dealt, value & suit: {Blackjack.Instance.GetCardValue(cardsDealt[card].GetValue())} (index {cardsDealt[card].GetValue()}) : {cardsDealt[card].GetSuit()}");
+#endif
+        receiver.AddCard(cardsDealt[card]);
+        receiver.SumCards();
+    }
+
+    private Card ApplyToCard(int value, int suit)
+    {
+        return new(value, suit);
     }
 }

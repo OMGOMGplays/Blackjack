@@ -17,25 +17,48 @@
 
     public override void Update()
     {
-        string instructions = ""; // Null in string
-
-        if (currentTurn)
+        if (currentTurn && !unableToPlay)
         {
-            string input = Console.ReadLine(); // Get player's input
+            GetInput();
 
-            if (instructions == "")
-            {   // Print instructions
-                instructions = "Press H to hit, F to fold, and D to double down";
-                Console.WriteLine($"\n{instructions}\n");
-            }
-
-            // Hit
-            if (input.Contains("H") || input.Contains("h"))
+            if (CheckForBust()) // Check if the player has busted...
             {
-                Hit();
+                Bust();
             }
         }
-        else
+    }
+
+    private void GetInput()
+    {
+        string instructions = ""; // Instructions, temp null for checks
+        string input = ""; // To get the player's input
+
+        if (instructions == "")
+        {   // Print instructions
+            instructions = "Type H to hit, F to fold, and D to double down";
+            Console.WriteLine($"\n{instructions}\n");
+            Console.Write("> ");
+            input = Console.ReadLine();
+        }
+
+        if (Blackjack.Instance.CheckInput(input, "h")) // Hit
+        {
+            Hit();
+        }
+        else if (Blackjack.Instance.CheckInput(input, "f")) // Fold
+        {
+            Fold();
+        }
+        else if (Blackjack.Instance.CheckInput(input, "d")) // Double down
+        {
+            DoubleDown();
+        }
+        else // No corresponding action.
+        {
+            Console.WriteLine("\nInvalid input.");
+        }
+
+        if (!currentTurn || unableToPlay)
         {
             // Hides instructions if it isn't the player's turn
             if (instructions != "")

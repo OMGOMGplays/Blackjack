@@ -1,106 +1,137 @@
 ﻿public class CardHolder
 {
-	public virtual DeckOfCards cardDeck { get; set; } = new();
-	public virtual int totalWorth { get; set; }
+    public virtual DeckOfCards cardDeck { get; set; } = new();
+    public virtual int cardSum { get; set; }
 
-	public bool currentTurn;
-	public bool folded;
+    public bool currentTurn;
+    public bool unableToPlay;
 
-	public virtual void OnStart()
-	{
-		totalWorth = 0;
+    public virtual void OnStart()
+    {
+        cardSum = 0;
 
-		cardDeck.OnStart();
+        cardDeck.OnStart();
 
-		currentTurn = false;
-		folded = false;
-	}
+        currentTurn = false;
+        unableToPlay = false;
+    }
 
-	public virtual void Update()
-	{
+    public virtual void Update()
+    {
 
-	}
+    }
 
-	public virtual int GetCardCount()
-	{
-		int temp = 0;
+    public virtual int GetCardCount()
+    {
+        int temp = 0;
 
-		for (int i = 0; i < cardDeck.cards.Count(); i++)
-		{
-			if (cardDeck.cards[i] != null)
-			{
-				temp++;
-			}
-		}
+        for (int i = 0; i < cardDeck.cards.Count(); i++)
+        {
+            if (cardDeck.cards[i] != null)
+            {
+                temp++;
+            }
+        }
 
-		return temp;
-	}
+        return temp;
+    }
 
-	public virtual void AddCard(Card card)
-	{
-		for (int i = 0; i < cardDeck.cards.Count(); i++)
-		{
-			if (cardDeck.cards[i] == null)
-			{
-				cardDeck.cards[i] = card;
-			}
+    public virtual void AddCard(Card card)
+    {
+        for (int i = 0; i < cardDeck.cards.Count(); i++)
+        {
+            if (cardDeck.cards[i] == null)
+            {
+                cardDeck.cards[i] = card;
+            }
 
-			continue;
-		}
-	}
+            continue;
+        }
+    }
 
-	public virtual void SumCards()
-	{
-		foreach (Card card in cardDeck.cards)
-		{
-			totalWorth += Blackjack.Instance.GetValueFromIndex(card.GetValue(), this);
+    public virtual void SumCards()
+    {
+        //		foreach (Card card in cardDeck.cards)
+        //		{
+        //			cardSum += Blackjack.Instance.GetCardValue(card.GetValue(), this);
+        //#if DEBUG
+        //			Console.WriteLine($"cardSum: {cardSum}");
+        //#endif
+        //		}
+
+        for (int i = 0; i < cardDeck.cards.Length;)
+        {
+            if (cardDeck.cards[i] != null)
+            {
+                cardSum += Blackjack.Instance.GetCardValue(cardDeck.cards[i].GetValue(), this);
 #if DEBUG
-			Console.WriteLine($"totalWorth: {totalWorth}");
+                Console.WriteLine($"cardSum: {cardSum}");
 #endif
-		}
-	}
+                i++;
+            }
 
-	public virtual bool CheckForBust()
-	{
-		return totalWorth > 21 ? true : false; // You've gone and busted my good man.
-	}
+            break;
+        }
+    }
 
-	// Adds a card to the player's list
-	public virtual void Hit()
-	{
-		Random random = new();
+    public virtual bool CheckForBust()
+    {
+        return cardSum > 21 ? true : false; // You've gone and busted my good man.
+    }
 
-		if (folded || !currentTurn)
-		{
-			return;
-		}
+    // Adds a card to the player's list
+    public virtual void Hit()
+    {
+        Random random = new();
 
-		Blackjack.houseCards.DealCard(random.Next(0, HouseCards.CARDCOUNT), this);
-	}
+        if (unableToPlay || !currentTurn)
+        {
+            return;
+        }
 
-	// Primarily for dealer, though might not be used
-	public virtual void Skip()
-	{
+        Blackjack.houseCards.DealCard(random.Next(0, HouseCards.CARDCOUNT), this);
 
-	}
+        currentTurn = false;
 
-	// No more playing for this player!
-	public virtual void Fold()
-	{
-		if (!currentTurn)
-		{
-			return;
-		}
+        Console.WriteLine("Hit! You've been dealt a card.");
+    }
 
-		folded = true;
-	}
+    // For those who've busted or folded
+    public virtual void Skip()
+    {
+        currentTurn = false;
+    }
 
-	// Double or nuthin'
-	public virtual void DoubleDown()
-	{
-		if (folded || !currentTurn)
-		{
-			return;
-		}
-	}
+    // No more playing for this player!
+    public virtual void Fold()
+    {
+        if (!currentTurn)
+        {
+            return;
+        }
+
+        unableToPlay = true;
+
+        Console.WriteLine("You've folded!");
+    }
+
+    // Double or nuthin'
+    public virtual void DoubleDown()
+    {
+        if (unableToPlay || !currentTurn)
+        {
+            return;
+        }
+
+        currentTurn = false;
+
+        Console.WriteLine("Doubling down!");
+    }
+
+    // Holder has busted
+    public virtual void Bust()
+    {
+        unableToPlay = true;
+        Console.WriteLine("You've busted!");
+    }
 }

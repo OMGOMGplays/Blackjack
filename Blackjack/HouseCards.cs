@@ -13,7 +13,7 @@
         int pack = 1;
         int suit = 0;
         int value = 1;
-        Card card = new(0, 0);
+        Card card = null;
 
 #if DEBUG
         Console.WriteLine($"\nHouseCards: CARDCOUNT = {CARDCOUNT}\n");

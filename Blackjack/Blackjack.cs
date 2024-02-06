@@ -92,6 +92,7 @@ public class Blackjack
             SetPlayers();
         }
     }
+
     // Infinite loop so that the application will never end
     private void Update()
     {

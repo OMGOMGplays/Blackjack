@@ -1,18 +1,16 @@
-﻿using System.Diagnostics;
-
-public class Blackjack
+﻿public class Blackjack
 {
     public const int MAXPLAYERS = 4;
 
     public static Blackjack Instance;
-    public static HouseCards houseCards;
+    public static HouseCards houseCards = new();
 
-    private bool gameOver;
+    public bool gameOver;
+    public int turn;
+
     private int desiredPlayers;
     private Player[] players = new Player[MAXPLAYERS];
     private Dealer dealer = new();
-    private int playerTurn;
-    private int maxPlayerTurns;
 
     public static void Main()
     {
@@ -36,21 +34,25 @@ public class Blackjack
         Console.Title = "Blackjack";
         Console.SetWindowSize(160, 45); // 1280x720p
 
+        // Turns
+        turn = 0;
+
         // Set players
         SetPlayers();
 
         // House
-        houseCards = new();
         houseCards.GenerateCards();
 
         // Dealer
+        dealer.holderIndex = 0;
         dealer.OnStart();
 
         // Player(s)
-        for (int i = 0; i < desiredPlayers; i++)
+        for (int i = 1; i < desiredPlayers; i++)
         {
             Player player = new();
             player.OnStart();
+            player.holderIndex = i;
 
             players[i] = player;
         }
@@ -101,55 +103,37 @@ public class Blackjack
         // While the game isn't over, do its game loop
         while (!gameOver)
         {
-            foreach (Player player in players)
+            for (int player = 0; player < desiredPlayers; player++)
             {
-                if (player != null)
+                Player currPlayer = players[player];
+
+                if (currPlayer != null && currPlayer.currentTurn)
                 {
-                    if (player.currentTurn)
-                    {
-                        player.Update(); // If it's this player's turn, call their own Update function.
-                    }
+                    currPlayer.Update(); // If Player exists, call their Update function
                 }
             }
-#if DEBUG
-        debug:
-            if (input == "")
+
+            dealer.Update();
+
+            if (turn > desiredPlayers)
             {
-                Console.WriteLine("DEBUG - Type T to set player 1's currentTurn to true.");
-                Console.Write("> ");
-                input = Console.ReadLine();
+                turn = 0;
             }
 
-            if (CheckInput(input, "T"))
-            {
-                if (players[0] == null)
-                {
-                    continue;
-                }
-
-                players[0].currentTurn = true;
-            }
-            else
-            {
-                Console.WriteLine("\nInvalid input.\n");
-                input = "";
-                goto debug;
-            }
-#endif
             if (ShouldEndGame())
             {
-                Thread.Sleep(2500); // Pause before game closes.
+                Thread.Sleep(4000); // Pause before game closes.
                 gameOver = true;
             }
         }
     }
 
     // Handle game end requirements
-    private bool ShouldEndGame()
+    public bool ShouldEndGame(bool end = false)
     {
         foreach (Player player in players) // If all players can't play, dealer wins and game ends
         {
-            if (player.unableToPlay && player != null)
+            if (player != null && player.unableToPlay)
             {
                 Console.WriteLine("\nAll players unable to play and the dealer wins! Ending game...");
                 return true;
@@ -164,6 +148,11 @@ public class Blackjack
         {
             Console.WriteLine($"\nDealer busted! They reached {dealer.cardSum}.");
             return true;
+        }
+
+        if (end)
+        {
+            return end;
         }
 
         // Shouldn't end game.

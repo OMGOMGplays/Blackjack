@@ -5,6 +5,7 @@
 
     public bool currentTurn;
     public bool unableToPlay;
+    public int holderIndex;
 
     public virtual void OnStart()
     {
@@ -16,7 +17,30 @@
 
     public virtual void Update()
     {
+        if (Blackjack.Instance.turn == holderIndex)
+        {
+            currentTurn = true;
+        }
 
+        if (cardSum == 21)
+        {
+            Win(this);
+        }
+
+        if (!currentTurn)
+        {
+            return;
+        }
+
+        if (unableToPlay && currentTurn)
+        {
+            Blackjack.Instance.turn++;
+        }
+
+        if (CheckForBust())
+        {
+            Bust();
+        }
     }
 
     public virtual int GetCardCount()
@@ -47,29 +71,13 @@
         }
     }
 
-    public virtual void SumCards()
+    public virtual void SumCards(int input)
     {
-        //		foreach (Card card in cardDeck.cards)
-        //		{
-        //			cardSum += Blackjack.Instance.GetCardValue(card.GetValue(), this);
-        //#if DEBUG
-        //			Console.WriteLine($"cardSum: {cardSum}");
-        //#endif
-        //		}
+        cardSum += input; // Hacky, tacky, buncha bologne if you ask me
 
-        for (int i = 0; i < cardDeck.cards.Length;)
-        {
-            if (cardDeck.cards[i] != null)
-            {
-                cardSum += Blackjack.Instance.GetCardValue(cardDeck.cards[i].GetValue(), this);
 #if DEBUG
-                Console.WriteLine($"cardSum: {cardSum}");
+        Console.WriteLine($"cardSum: {cardSum}");
 #endif
-                i++;
-            }
-
-            break;
-        }
     }
 
     public virtual bool CheckForBust()
@@ -88,16 +96,9 @@
         }
 
         Blackjack.houseCards.DealCard(random.Next(0, HouseCards.CARDCOUNT), this);
-
-        currentTurn = false;
+        Blackjack.Instance.turn++;
 
         Console.WriteLine("Hit! You've been dealt a card.");
-    }
-
-    // For those who've busted or folded
-    public virtual void Skip()
-    {
-        currentTurn = false;
     }
 
     // No more playing for this player!
@@ -108,28 +109,35 @@
             return;
         }
 
+        Blackjack.Instance.turn++;
+        Console.WriteLine("\nYou've folded!");
+
         unableToPlay = true;
 
-        Console.WriteLine("You've folded!");
     }
 
-    // Double or nuthin'
-    public virtual void DoubleDown()
+    // Keep where you are
+    public virtual void Stand()
     {
         if (unableToPlay || !currentTurn)
         {
             return;
         }
 
-        currentTurn = false;
-
-        Console.WriteLine("Doubling down!");
+        Blackjack.Instance.turn++;
+        Console.WriteLine("\nStanding!");
     }
 
     // Holder has busted
     public virtual void Bust()
     {
         unableToPlay = true;
-        Console.WriteLine("You've busted!");
+        Console.WriteLine("\nYou've busted!");
+    }
+
+    private void Win(CardHolder winner)
+    {
+        Console.WriteLine($"{winner} {holderIndex} has won! Ending game.");
+        Blackjack.Instance.ShouldEndGame(true);
     }
 }

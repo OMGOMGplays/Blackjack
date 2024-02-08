@@ -22,30 +22,19 @@
         {
             for (suit = 0; suit < SUITCOUNT; suit++)
             {
-                //if (suit == SUITCOUNT + 1)
-                //{
-                //    suit = 0;
-                //}
-
                 for (value = 1; value <= VALUECOUNT; value++)
                 {
-                    //if (value == VALUECOUNT + 1)
-                    //{
-                    //    value = 1;
-                    //}
+                    card = new(value, suit);
 
-                    card = ApplyToCard(value, suit);
-                    
                     for (int i = 0; i < cardsRemaining.Length; i++)
                     {
                         if (cardsRemaining[i] == null)
                         {
                             cardsRemaining[i] = card;
-                            continue;
+                            break;
                         }
                     }
 
-                    //Card card = new(value, suit);
 #if DEBUG
                     Console.WriteLine($"Generated card from pack #{pack} value & suit: {Blackjack.Instance.GetCardValue(card.GetValue())} (index {card.GetValue()}) : {card?.GetSuit()}");
 #endif
@@ -71,24 +60,20 @@
             }
         }
 
-        if (cardsRemaining[card] == null) // Shouldn't be possible, but here to stop an error, for safety's sake
+        // Shouldn't be possible, but here to stop an error, for safety's sake
+        if (cardsRemaining[card] == null)
         {
-            Console.WriteLine("Null card...\n");
+            Console.WriteLine("Null card has been dealt\n");
             return;
         }
 
 #if DEBUG
-        Console.WriteLine($"Card #{card} dealt, value & suit: {Blackjack.Instance.GetCardValue(cardsRemaining[card].GetValue())} (index {cardsRemaining[card].GetValue()}) : {cardsRemaining[card].GetSuit()}");
+        Console.WriteLine($"Card #{card} dealt to holder {receiver} {receiver.holderIndex}, value & suit: {Blackjack.Instance.GetCardValue(cardsRemaining[card].GetValue())} (index {cardsRemaining[card].GetValue()}) : {cardsRemaining[card].GetSuit()}");
 #endif
 
         receiver.AddCard(cardsRemaining[card]);
-        receiver.SumCards();
+        receiver.SumCards(Blackjack.Instance.GetCardValue(cardsRemaining[card].GetValue()));
 
         cardsRemaining[card] = null;
-    }
-
-    private Card ApplyToCard(int value, int suit)
-    {
-        return new(value, suit);
     }
 }

@@ -5,26 +5,21 @@
     public override void OnStart()
     {
         base.OnStart();
-
-        Random random = new Random();
-
+        
         // There's most likely a much better way of doing this
         for (int i = 0; i < 2; i++)
         {
-            Blackjack.houseCards.DealCard(random.Next(0, HouseCards.CARDCOUNT), this);
+            Hit();
         }
     }
 
     public override void Update()
     {
-        if (currentTurn && !unableToPlay)
+        base.Update();
+
+        if (!unableToPlay)
         {
             GetInput();
-
-            if (CheckForBust()) // Check if the player has busted...
-            {
-                Bust();
-            }
         }
     }
 
@@ -35,23 +30,23 @@
 
         if (instructions == "")
         {   // Print instructions
-            instructions = "Type H to hit, F to fold, and D to double down";
+            instructions = $"Player {holderIndex}, type H to hit, F to fold, and S to stand";
             Console.WriteLine($"\n{instructions}\n");
             Console.Write("> ");
             input = Console.ReadLine();
         }
 
-        if (Blackjack.Instance.CheckInput(input, "h")) // Hit
+        if (Blackjack.Instance.CheckInput(input, "H")) // Hit
         {
             Hit();
         }
-        else if (Blackjack.Instance.CheckInput(input, "f")) // Fold
+        else if (Blackjack.Instance.CheckInput(input, "F")) // Fold
         {
             Fold();
         }
-        else if (Blackjack.Instance.CheckInput(input, "d")) // Double down
+        else if (Blackjack.Instance.CheckInput(input, "S")) // Stand
         {
-            DoubleDown();
+            Stand();
         }
         else // No corresponding action.
         {

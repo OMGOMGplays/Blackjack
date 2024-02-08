@@ -5,12 +5,14 @@
     public override void OnStart()
     {
         base.OnStart();
-        
+
         // There's most likely a much better way of doing this
         for (int i = 0; i < 2; i++)
         {
-            Hit();
+            Hit(false);
         }
+
+        Blackjack.Instance.turn++;
     }
 
     public override void Update()

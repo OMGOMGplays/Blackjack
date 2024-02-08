@@ -11,6 +11,7 @@
     private int desiredPlayers;
     private Player[] players = new Player[MAXPLAYERS];
     private Dealer dealer = new();
+    private CardHolder[] cardHolders = new CardHolder[MAXPLAYERS + 1];
 
     public static void Main()
     {
@@ -35,7 +36,7 @@
         Console.SetWindowSize(160, 45); // 1280x720p
 
         // Turns
-        turn = 0;
+        turn = 1; // Start on the players
 
         // Set players
         SetPlayers();
@@ -46,15 +47,17 @@
         // Dealer
         dealer.holderIndex = 0;
         dealer.OnStart();
+        cardHolders[0] = dealer;
 
         // Player(s)
-        for (int i = 1; i < desiredPlayers; i++)
+        for (int i = 1; i <= desiredPlayers; i++)
         {
             Player player = new();
             player.OnStart();
-            player.holderIndex = i;
+            player.holderIndex = i - 1;
 
-            players[i] = player;
+            players[i - 1] = player;
+            cardHolders[i] = player;
         }
 
         // Start Update
@@ -70,12 +73,12 @@
 
         if (int.TryParse(input, out int result)) // If the input is an int
         {
-            if (result < 1)
+            if (result < 1) // Too few players
             {
                 Console.WriteLine("Too few players! There cannot be fewer than 1 player in a match.");
                 SetPlayers(); // Retry setting players
             }
-            else if (result > MAXPLAYERS)
+            else if (result > MAXPLAYERS) // Too many players
             {
                 Console.WriteLine($"Too many players! There can only be a maximum of {MAXPLAYERS} players in a match.");
                 SetPlayers();
@@ -115,9 +118,35 @@
 
             dealer.Update();
 
-            if (turn > desiredPlayers)
+            if (turn + 1 > desiredPlayers)
             {
                 turn = 0;
+            }
+
+            foreach (CardHolder holder in cardHolders)
+            {
+                if (holder != null)
+                {
+                    if (turn == holder.holderIndex && !holder.currentTurn)
+                    {
+                        holder.currentTurn = true;
+                    }
+                    else
+                    {
+                        holder.currentTurn = false;
+                    }
+                }
+            }
+
+            for (int i = 0; i < cardHolders.Length; i++)
+            {
+                if (cardHolders[i] != null)
+                {
+                    if (cardHolders[i].unableToPlay)
+                    {
+                        // Compare, fix ^ that first
+                    }
+                }
             }
 
             if (ShouldEndGame())
@@ -128,8 +157,28 @@
         }
     }
 
+    private bool Compare()
+    {
+        for (int holder = 0; holder < cardHolders.Length; holder++)
+        {
+            if (cardHolders[holder] != null && cardHolders[holder + 1] != null)
+            {
+                if (cardHolders[holder].cardSum > cardHolders[holder + 1].cardSum)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
     // Handle game end requirements
-    public bool ShouldEndGame(bool end = false)
+    public bool ShouldEndGame()
     {
         foreach (Player player in players) // If all players can't play, dealer wins and game ends
         {
@@ -150,13 +199,24 @@
             return true;
         }
 
-        if (end)
+        if (Compare())
         {
-            return end;
+            Console.WriteLine("Some player won! Ending game...");
+            return true;
+        }
+
+        if (WinGame())
+        {
+            return true;
         }
 
         // Shouldn't end game.
         return false;
+    }
+
+    public bool WinGame(bool win = false)
+    {
+        return win;
     }
 
     public int GetCardValue(int index, CardHolder cardHolder)

@@ -1,12 +1,13 @@
 ﻿public class CardHolder
 {
     public virtual DeckOfCards cardDeck { get; set; } = new();
-    public virtual int cardSum { get; set; }
 
     public bool currentTurn;
     public bool unableToPlay;
     public int holderIndex;
+    public int cardSum;
 
+    // Resets all values, as you guessed it, on start.
     public virtual void OnStart()
     {
         cardSum = 0;
@@ -15,34 +16,38 @@
         unableToPlay = false;
     }
 
+    // The beating heart of the holder, allows them to play the game.
     public virtual void Update()
     {
-        if (Blackjack.Instance.turn == holderIndex)
-        {
-            currentTurn = true;
-        }
+        // Automatically sets currentTurn depending on the turn and the holderIndex.
+        currentTurn = Blackjack.Instance.turn == holderIndex && !currentTurn ? true : false;
 
         if (cardSum == 21)
         {
+            // Blackjack! The holder has won.
             Win(this);
+        }
+        else if (CheckForBust())
+        {
+            // If you reach this point, you've busted!
+            Bust();
         }
 
         if (!currentTurn)
         {
+            // If it isn't your turn, don't do anything.
             return;
         }
 
         if (unableToPlay && currentTurn)
         {
+            // If you can't play, skip your turn.
             Blackjack.Instance.turn++;
-        }
-
-        if (CheckForBust())
-        {
-            Bust();
         }
     }
 
+    // Returns the amount of valid cards in the player's deck.
+    // Was most likely temp and is left as residue of testing.
     public virtual int GetCardCount()
     {
         int temp = 0;
@@ -58,6 +63,7 @@
         return temp;
     }
 
+    // Adds a card to the players deck of cards.
     public virtual void AddCard(Card card)
     {
         for (int i = 0; i < cardDeck.cards.Count(); i++)
@@ -71,6 +77,7 @@
         }
     }
 
+    // Sums the holders cards up to a value.
     public virtual void SumCards(int input)
     {
         cardSum += input; // Hacky, tacky, buncha bologne if you ask me
@@ -80,28 +87,31 @@
 #endif
     }
 
+    // Does as its name suggests, if holder's cardSum is more than 21, they've busted.
     public virtual bool CheckForBust()
     {
         return cardSum > 21 ? true : false; // You've gone and busted my good man.
     }
 
-    // Adds a card to the player's list
-    public virtual void Hit()
+    // Adds a card to the holder's list
+    public virtual void Hit(bool incTurn = true, bool displayText = true)
     {
         Random random = new();
 
-        if (unableToPlay || !currentTurn)
+        Blackjack.houseCards.DealCard(random.Next(0, HouseCards.CARDCOUNT), this);
+
+        if (incTurn)
         {
-            return;
+            Blackjack.Instance.turn++;
         }
 
-        Blackjack.houseCards.DealCard(random.Next(0, HouseCards.CARDCOUNT), this);
-        Blackjack.Instance.turn++;
-
-        Console.WriteLine("Hit! You've been dealt a card.");
+        if (displayText)
+        {
+            Console.WriteLine("Hit! You've been dealt a card.");
+        }
     }
 
-    // No more playing for this player!
+    // No more playing for this holder!
     public virtual void Fold()
     {
         if (!currentTurn)
@@ -113,10 +123,9 @@
         Console.WriteLine("\nYou've folded!");
 
         unableToPlay = true;
-
     }
 
-    // Keep where you are
+    // Keep where you are.
     public virtual void Stand()
     {
         if (unableToPlay || !currentTurn)
@@ -128,16 +137,17 @@
         Console.WriteLine("\nStanding!");
     }
 
-    // Holder has busted
+    // Holder has busted.
     public virtual void Bust()
     {
         unableToPlay = true;
         Console.WriteLine("\nYou've busted!");
     }
 
+    // Holder has won, and the game should stop.
     private void Win(CardHolder winner)
     {
-        Console.WriteLine($"{winner} {holderIndex} has won! Ending game.");
-        Blackjack.Instance.ShouldEndGame(true);
+        Console.WriteLine($"{winner} {holderIndex + 1} has won! Ending game.");
+        Blackjack.Instance.WinGame(true);
     }
 }

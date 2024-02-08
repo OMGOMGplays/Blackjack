@@ -68,7 +68,7 @@
         }
 
 #if DEBUG
-        Console.WriteLine($"Card #{card} dealt to holder {receiver} {receiver.holderIndex}, value & suit: {Blackjack.Instance.GetCardValue(cardsRemaining[card].GetValue())} (index {cardsRemaining[card].GetValue()}) : {cardsRemaining[card].GetSuit()}");
+        Console.WriteLine($"Card #{card} dealt to holder {receiver}, value & suit: {Blackjack.Instance.GetCardValue(cardsRemaining[card].GetValue())} (index {cardsRemaining[card].GetValue()}) : {cardsRemaining[card].GetSuit()}");
 #endif
 
         receiver.AddCard(cardsRemaining[card]);

@@ -3,6 +3,13 @@
     public override void OnStart()
     {
         base.OnStart();
+
+        for (int i = 0; i < 2; i++)
+        {
+            Hit(false, false);
+        }
+
+        Blackjack.Instance.turn++;
     }
 
     public override void Update()
@@ -12,15 +19,9 @@
         if (cardSum > 17)
         {
             Stand(); // Can't hit if their sum > 17
+            return;
         }
 
-        if (currentTurn)
-        {
-            for (int hitCount = 0; hitCount < 1; hitCount++)
-            {
-                Hit();
-                return;
-            }
-        }
+        Hit(true, false);
     }
 }

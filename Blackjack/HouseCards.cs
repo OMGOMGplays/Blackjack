@@ -47,7 +47,7 @@
 
     public void DealCard(int card, CardHolder receiver)
     {
-        Card currCard = cards Remaining[card];
+        Card currCard = cardsRemaining[card];
 
         // Can't deal a null or already dealt card, try again with the next / prev one (depending on cardIndex)
         if (currCard == null)

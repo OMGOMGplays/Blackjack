@@ -14,16 +14,6 @@
 		this.value = value;
 		this.suit = suit;
 	}
-	
-	//public void SetValueIndex(int valueIndex)
-	//{
-	//	this.valueIndex = valueIndex;
-	//}
-
-	//public void SetSuit(int suit)
-	//{
-	//	this.suit = (Suit)suit;
-	//}
 
 	public int GetValue()
 	{

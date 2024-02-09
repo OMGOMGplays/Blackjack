@@ -70,11 +70,11 @@
         }
 
 #if DEBUG
-        Console.WriteLine($"Card #{card} dealt to holder {receiver}, value & suit: {Blackjack.Instance.GetCardValue(currCard.GetValue())} (index {currCard.GetValue()}) : {currCard.GetSuit()}");
+        Console.WriteLine($"Card #{card} dealt to holder {receiver}, value & suit: {Blackjack.Instance.GetCardValue(currCard.GetValue(), receiver)} (index {currCard.GetValue()}) : {currCard.GetSuit()}");
 #endif
 
         receiver.AddCard(currCard);
-        receiver.SumCards(Blackjack.Instance.GetCardValue(currCard.GetValue()));
+        receiver.SumCards(Blackjack.Instance.GetCardValue(currCard.GetValue(), receiver));
 
         currCard = null;
     }

@@ -3,6 +3,7 @@
     public virtual DeckOfCards cardDeck { get; set; } = new();
 
     public bool currentTurn;
+    public bool standing;
     public bool unableToPlay;
     public int holderIndex;
     public int cardSum;
@@ -12,6 +13,7 @@
     {
         cardSum = 0;
 
+        standing = false;
         currentTurn = false;
         unableToPlay = false;
     }
@@ -22,26 +24,27 @@
         // Automatically sets currentTurn depending on the turn and the holderIndex.
         currentTurn = Blackjack.Instance.turn == holderIndex && !currentTurn ? true : false;
 
+        // Blackjack! The holder has won.
         if (cardSum == 21)
         {
-            // Blackjack! The holder has won.
-            Win(this);
+            Blackjack.Instance.WinGame(this, true);
         }
-        else if (CheckForBust())
+
+        // Holder has busted.
+        if (cardSum > 21)
         {
-            // If you reach this point, you've busted!
             Bust();
         }
 
+        // If it isn't your turn, don't do anything.
         if (!currentTurn)
         {
-            // If it isn't your turn, don't do anything.
             return;
         }
 
+        // If you can't play, skip your turn.
         if (unableToPlay && currentTurn)
         {
-            // If you can't play, skip your turn.
             Blackjack.Instance.turn++;
         }
     }
@@ -71,9 +74,8 @@
             if (cardDeck.cards[i] == null)
             {
                 cardDeck.cards[i] = card;
+                break;
             }
-
-            continue;
         }
     }
 
@@ -87,13 +89,7 @@
 #endif
     }
 
-    // Does as its name suggests, if holder's cardSum is more than 21, they've busted.
-    public virtual bool CheckForBust()
-    {
-        return cardSum > 21 ? true : false; // You've gone and busted my good man.
-    }
-
-    // Adds a card to the holder's list
+    // Adds a card to the holder's list.
     public virtual void Hit(bool incTurn = true, bool displayText = true)
     {
         Random random = new();
@@ -114,25 +110,16 @@
     // No more playing for this holder!
     public virtual void Fold()
     {
-        if (!currentTurn)
-        {
-            return;
-        }
+        unableToPlay = true;
 
         Blackjack.Instance.turn++;
         Console.WriteLine("\nYou've folded!");
-
-        unableToPlay = true;
     }
 
     // Keep where you are.
     public virtual void Stand()
     {
-        if (unableToPlay || !currentTurn)
-        {
-            return;
-        }
-
+        standing = true;
         Blackjack.Instance.turn++;
         Console.WriteLine("\nStanding!");
     }
@@ -141,13 +128,6 @@
     public virtual void Bust()
     {
         unableToPlay = true;
-        Console.WriteLine("\nYou've busted!");
-    }
-
-    // Holder has won, and the game should stop.
-    private void Win(CardHolder winner)
-    {
-        Console.WriteLine($"{winner} {holderIndex + 1} has won! Ending game.");
-        Blackjack.Instance.WinGame(true);
+        Console.WriteLine($"\nYou've busted!\nYour total worth ended up being {cardSum}.");
     }
 }

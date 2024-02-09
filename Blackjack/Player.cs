@@ -32,9 +32,9 @@
 
         if (instructions == "")
         {   // Print instructions
-            instructions = $"Player {holderIndex}, type H to hit, F to fold, and S to stand";
+            instructions = $"Player {holderIndex}, type H to hit, F to fold, and S to stand\nYour current cards total up to {cardSum}";
             Console.WriteLine($"\n{instructions}\n");
-            Console.Write("> ");
+            Console.Write("> "); // Input flair
             input = Console.ReadLine();
         }
 

@@ -98,12 +98,12 @@
         }
     }
 
-    // Infinite loop so that the application will never end
+    // Infinite loop so that the application will never end.
     private void Update()
     {
         string input = "";
 
-        // While the game isn't over, do its game loop
+        // While the game isn't over, do its game loop.
         while (!gameOver)
         {
             for (int player = 0; player < desiredPlayers; player++)
@@ -112,7 +112,8 @@
 
                 if (currPlayer != null && currPlayer.currentTurn)
                 {
-                    currPlayer.Update(); // If Player exists, call their Update function
+                    // If player exists, call their Update function.
+                    currPlayer.Update();
                 }
             }
 
@@ -127,6 +128,8 @@
             {
                 if (holder != null)
                 {
+                    // Double check to make sure the right player has their turn active.
+                    // (First one being inside the CardHolder class itself.)
                     if (turn == holder.holderIndex && !holder.currentTurn)
                     {
                         holder.currentTurn = true;
@@ -138,73 +141,38 @@
                 }
             }
 
-            for (int i = 0; i < cardHolders.Length; i++)
-            {
-                if (cardHolders[i] != null)
-                {
-                    if (cardHolders[i].unableToPlay)
-                    {
-                        // Compare, fix ^ that first
-                    }
-                }
-            }
-
             if (ShouldEndGame())
             {
-                Thread.Sleep(4000); // Pause before game closes.
+                // Pause before game ends / closes.
+                Thread.Sleep(4000); 
                 gameOver = true;
             }
         }
     }
 
-    private bool Compare()
-    {
-        for (int holder = 0; holder < cardHolders.Length; holder++)
-        {
-            if (cardHolders[holder] != null && cardHolders[holder + 1] != null)
-            {
-                if (cardHolders[holder].cardSum > cardHolders[holder + 1].cardSum)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
-        return false;
-    }
-
     // Handle game end requirements
     public bool ShouldEndGame()
     {
-        foreach (Player player in players) // If all players can't play, dealer wins and game ends
+        for (int i = 0; i < players.Length; i++)
         {
-            if (player != null && player.unableToPlay)
-            {
-                Console.WriteLine("\nAll players unable to play and the dealer wins! Ending game...");
-                return true;
-            }
-            else
+            if (players[i] == null)
             {
                 break;
             }
+
+            if (players[i].unableToPlay)
+            {
+                Console.WriteLine("\nAll players unable to play! Dealer has won, ending game...");
+                return true;
+            }
+
+            if (players[i].standing)
+            {
+                return Compare() == null ? false : true;
+            }
         }
 
-        if (dealer.CheckForBust()) // If the dealer's busted, end the game
-        {
-            Console.WriteLine($"\nDealer busted! They reached {dealer.cardSum}.");
-            return true;
-        }
-
-        if (Compare())
-        {
-            Console.WriteLine("Some player won! Ending game...");
-            return true;
-        }
-
+        // If a player has won thru e.g. Blackjack (cardSum == 21)
         if (WinGame())
         {
             return true;
@@ -214,9 +182,40 @@
         return false;
     }
 
-    public bool WinGame(bool win = false)
+    public bool WinGame(CardHolder winner = null, bool win = false)
     {
+        if (win)
+        {
+            Console.WriteLine($"\n{winner} {winner.holderIndex} has won! Ending game.");
+        }
+
         return win;
+    }
+
+    private CardHolder Compare()
+    {
+        int i;
+        CardHolder winner = new();
+
+        for (i = 0; i < cardHolders.Length - 1; i++)
+        {
+            CardHolder holder = cardHolders[i];
+            CardHolder nextHolder = cardHolders[i + 1];
+
+            if (holder != null && nextHolder != null)
+            {
+                if (holder.cardSum > nextHolder.cardSum)
+                {
+                    winner = holder;
+                }
+                else
+                {
+                    winner = nextHolder;
+                }
+            }
+        }
+
+        return winner;
     }
 
     public int GetCardValue(int index, CardHolder cardHolder)

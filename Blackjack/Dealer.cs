@@ -21,7 +21,5 @@
             Stand(); // Can't hit if their sum > 17
             return;
         }
-
-        Hit(true, false);
     }
 }

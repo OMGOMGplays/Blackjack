@@ -47,8 +47,10 @@
 
     public void DealCard(int card, CardHolder receiver)
     {
+        Card currCard = cards Remaining[card];
+
         // Can't deal a null or already dealt card, try again with the next / prev one (depending on cardIndex)
-        if (cardsRemaining[card] == null)
+        if (currCard == null)
         {
             if (card == CARDCOUNT)
             {
@@ -61,19 +63,19 @@
         }
 
         // Shouldn't be possible, but here to stop an error, for safety's sake
-        if (cardsRemaining[card] == null)
+        if (currCard == null)
         {
             Console.WriteLine("Null card has been dealt\n");
             return;
         }
 
 #if DEBUG
-        Console.WriteLine($"Card #{card} dealt to holder {receiver}, value & suit: {Blackjack.Instance.GetCardValue(cardsRemaining[card].GetValue())} (index {cardsRemaining[card].GetValue()}) : {cardsRemaining[card].GetSuit()}");
+        Console.WriteLine($"Card #{card} dealt to holder {receiver}, value & suit: {Blackjack.Instance.GetCardValue(currCard.GetValue())} (index {currCard.GetValue()}) : {currCard.GetSuit()}");
 #endif
 
-        receiver.AddCard(cardsRemaining[card]);
-        receiver.SumCards(Blackjack.Instance.GetCardValue(cardsRemaining[card].GetValue()));
+        receiver.AddCard(currCard);
+        receiver.SumCards(Blackjack.Instance.GetCardValue(currCard.GetValue()));
 
-        cardsRemaining[card] = null;
+        currCard = null;
     }
 }
